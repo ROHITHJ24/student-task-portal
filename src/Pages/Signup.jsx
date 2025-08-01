@@ -2,15 +2,13 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import Login from "./Login"; // ⬅️ Import Login component
 
-function Signup() {
+function Signup({ onClose, onSwitchToLogin }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
   const [error, setError] = useState("");
-  const [showLoginModal, setShowLoginModal] = useState(false); // ⬅️ State for modal
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -26,8 +24,10 @@ function Signup() {
         role,
       });
 
-      // Show login modal instead of navigating
-      setShowLoginModal(true);
+      // After signup, switch to Login modal
+      if (onSwitchToLogin) {
+        onSwitchToLogin();
+      }
 
     } catch (err) {
       setError(err.message);
@@ -35,9 +35,17 @@ function Signup() {
   };
 
   return (
-    <>
-      <div className=" flex items-center justify-center bg-white p-10">
-        <form onSubmit={handleSignup} className="bg-white p-8 rounded shadow-md w-80">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="relative bg-white p-8 rounded-lg shadow-lg w-[90%] max-w-md">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+        >
+          &times;
+        </button>
+
+        <form onSubmit={handleSignup} className="w-full">
           <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
 
           <input
@@ -75,29 +83,26 @@ function Signup() {
 
           {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
+          <p className="mt-2 text-sm text-center text-gray-500">
+            Already have an account?{" "}
+            <button
+              type="button"
+              onClick={onSwitchToLogin}
+              className="text-blue-500 hover:underline"
+            >
+              Login
+            </button>
+          </p>
+
           <button
             type="submit"
-            className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+            className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 mt-2"
           >
             Sign Up
           </button>
         </form>
       </div>
-
-      {showLoginModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowLoginModal(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl"
-            >
-              &times;
-            </button>
-            <Login />
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
 

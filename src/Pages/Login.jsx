@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase";
+import Signup from "./Signup";
 
 function Login({ onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
   const [error, setError] = useState("");
+  const [showSignupModal, setShowSignupModal] = useState(false);
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -27,12 +30,10 @@ function Login({ onClose }) {
         return;
       }
 
-      // ✅ Close the modal before navigating
       if (onClose) {
         onClose();
       }
 
-      // ✅ Navigate to respective dashboard
       if (role === "teacher") {
         navigate("/teacher-dashboard", { state: { name: userData.name } });
       } else {
@@ -43,6 +44,20 @@ function Login({ onClose }) {
       setError("Invalid credentials or user not found.");
     }
   };
+
+  // Show Signup instead of Login
+  if (showSignupModal) {
+    return (
+      <Signup
+        onClose={() => {
+          setShowSignupModal(false); // Close Signup
+        }}
+        onSwitchToLogin={() => {
+          setShowSignupModal(false); // Open Login again
+        }}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
@@ -86,6 +101,17 @@ function Login({ onClose }) {
           />
 
           {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+
+          <p className="mt-1 mb-3 text-sm text-center text-gray-500">
+            Don’t have an account?{" "}
+            <button
+              type="button"
+              onClick={() => setShowSignupModal(true)}
+              className="text-blue-500 hover:underline"
+            >
+              Sign Up
+            </button>
+          </p>
 
           <button
             type="submit"
