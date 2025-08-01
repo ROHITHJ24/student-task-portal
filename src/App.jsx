@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./Pages/Login"; 
-import {Link} from "react-router-dom";
+import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import TeacherDashboard from "./Pages/TeacherDashboard";
 import StudentDashboard from "./Pages/StudentDashboard";
@@ -10,14 +9,13 @@ import Home from "./Pages/Home";
 function App() {
   return (
     <Router>
-   <NavBar/>
-   <Home/>
+      <NavBar />
       <Routes>
- <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={<Home />} /> {/* ✅ Moved inside Routes */}
+        <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/teacher-dashboard" element={<TeacherDashboard studentName={name}/>} />
-        <Route path="/student-dashboard" element={<StudentDashboard/>} />
-        {/* Add other routes later */}
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
       </Routes>
     </Router>
   );

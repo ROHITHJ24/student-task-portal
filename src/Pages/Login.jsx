@@ -27,66 +27,74 @@ function Login({ onClose }) {
         return;
       }
 
-      // Close the modal
+      // ✅ Close the modal before navigating
       if (onClose) {
         onClose();
       }
 
-      // Navigate
+      // ✅ Navigate to respective dashboard
       if (role === "teacher") {
         navigate("/teacher-dashboard", { state: { name: userData.name } });
       } else {
         navigate("/student-dashboard", { state: { name: userData.name } });
       }
+
     } catch (err) {
       setError("Invalid credentials or user not found.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded shadow-md w-80"
-      >
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full mb-3 p-2 border rounded"
-          required
-        />
-
-        <select
-          className="w-full mb-4 p-2 border rounded"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-        >
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-        </select>
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-          required
-        />
-
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="relative bg-white p-8 rounded-lg shadow-lg w-[90%] max-w-md">
+        {/* Close Button */}
         <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
         >
-          Login
+          &times;
         </button>
-      </form>
+
+        <form onSubmit={handleLogin} className="w-full">
+          <h2 className="text-2xl font-semibold mb-4">Login</h2>
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full mb-3 p-2 border rounded"
+            required
+          />
+
+          <select
+            className="w-full mb-4 p-2 border rounded"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+          </select>
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full mb-4 p-2 border rounded"
+            required
+          />
+
+          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
